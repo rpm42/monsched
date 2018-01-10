@@ -38,7 +38,9 @@ html
 .container
   min-height: 100vh
   display: flex
+  flex-direction: column
   justify-content: left
-  align-items: left
+  // align-items: left
   text-align: left
+  align-items: stretch
 </style>

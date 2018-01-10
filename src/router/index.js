@@ -20,14 +20,16 @@ export default new Router({
       component: CreateWeek
     },
     {
-      path: '/:week',
+      path: '/:date',
       name: 'WeekView',
-      component: WeekView
+      component: WeekView,
+      props: (route) => ({ date: route.params.date, yaml: route.query.yaml === null })
     },
     {
-      path: '/:week/:day/create-service',
+      path: '/:date/:day/create-service',
       name: 'CreateService',
-      component: CreateService
+      component: CreateService,
+      props: true
     }
   ]
 })
