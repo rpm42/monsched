@@ -7,30 +7,40 @@
       </div>
       <h2>YamlView</h2>
       <div class="yaml-container">
-        <yamledit :data="transformDays(days[date])" @save="onYamlSave"/>
+        <yamledit :data="days[date]" :validate="validate" @save="onYamlSave"/>
       </div>
     </div>
     <div v-else>
       <router-link to="/">&lt;- Back</router-link>
       <router-link :to="`${$route.path}?yaml`" replace>SHOW YAML</router-link>
+      <router-link :to="`${$route.path}/preview`">PREVIEW</router-link>
       <h2>WeekView</h2>
 
       <div v-for="dindex in 7" :key="`d-${dindex}`">
         <h4>{{formatDate(date, dindex)}}</h4>
         <router-link :to="`/${date}/${dindex}/create-service`" tag="button" class="mv2">+ Добавить службу</router-link>
-        <router-link :to="`/${date}/${dindex}/create-info`" tag="button" class="mv2">+ Инфо</router-link>
+        <router-link :to="`/${date}/${dindex}/edit-day`" tag="button" class="mv2">+ Инфо</router-link>
+        <p v-if="days[date][dindex].description"><b>Description:</b> {{ days[date][dindex].description }}</p>
+        <p v-if="days[date][dindex].pagebreak"><b>Pagebreak</b></p>
         <table class="collapse ba br2 b--black-10 pv2 ph3">
           <tr>
             <th class="pa1">Время</th>
             <th class="pa1">Храм</th>
             <th class="pa1">Служба</th>
             <th class="pa1">Священник</th>
+            <th class="pa1">Управление</th>
           </tr>
           <tr v-for="(service, sindex) in days[date][dindex].services" :key="`s-${sindex}`">
             <td class="pa1">{{service.time}}</td>
             <td class="pa1">{{service.church}}</td>
             <td class="pa1">{{service.service}}</td>
             <td class="pa1">{{service.priest}}</td>
+            <td class="pa1">
+              <button class="pa1 pt2" @click="serviceDown(days[date][dindex], sindex)">🔽</button>
+              <button class="pa1 pt2" @click="serviceUp(days[date][dindex], sindex)">🔼</button>
+              <router-link :to="`/${date}/${dindex}/${sindex}/edit-service`" tag="button" class="pa1 pt2">🖋</router-link>
+              <button class="pa1 pt2" @click="deleteService(days[date][dindex], sindex)">🗑</button>
+            </td>
           </tr>
         </table>
       </div>
@@ -83,10 +93,44 @@ export default {
     },
     onYamlSave (obj) {
       console.log(obj)
-      // for (let key in this.days) {
-        // let day = this.days[key]
-        // day.services
-      // }
+      this.$store.commit('SET_WEEK', {
+        week: obj[1].week,
+        weekObj: obj
+      })
+      this.$router.replace(this.$route.path)
+    },
+    validate (obj) {
+      console.log('validate', obj)
+      return 'OK'
+    },
+    serviceUp (dayObj, sindex) {
+      if (sindex === 0) {
+        return
+      }
+      const tmp = dayObj.services[sindex - 1]
+      dayObj.services[sindex - 1] = dayObj.services[sindex]
+      dayObj.services[sindex] = tmp
+      this.$store.commit('SET_DAY', dayObj)
+    },
+    serviceDown (dayObj, sindex) {
+      if (sindex === dayObj.services.length - 1) {
+        return
+      }
+      const tmp = dayObj.services[sindex + 1]
+      dayObj.services[sindex + 1] = dayObj.services[sindex]
+      dayObj.services[sindex] = tmp
+      this.$store.commit('SET_DAY', dayObj)
+    },
+    deleteService (dayObj, sindex) {
+      if (sindex < 0 || sindex > dayObj.services.length - 1) {
+        return
+      }
+      if (!confirm('Точно удалить?')) {
+        return
+      }
+      const services = _.filter(dayObj.services, (s, i) => { return i !== sindex })
+      dayObj.services = services
+      this.$store.commit('SET_DAY', dayObj)
     }
   },
   components: {

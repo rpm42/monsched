@@ -30,16 +30,21 @@ export default {
         theme: 'base16-dark',
         lineWrapping: true,
         showCursorWhenSelecting: true
-      }
+      },
+      code: ''
     }
   },
-  computed: {
-    code () {
-      return yaml.safeDump(this.data)
-    }
+  mounted () {
+    this.code = yaml.safeDump(this.data)
   },
   methods: {
     save () {
+      if (this.validate) {
+        const status = this.validate(yaml.safeLoad(this.code))
+        if (status !== 'OK') {
+          return false
+        }
+      }
       console.log('save1', this.code)
       console.log('save2', yaml.safeLoad(this.code))
       this.$emit('save', yaml.safeLoad(this.code))
@@ -53,7 +58,7 @@ export default {
 
 <style lang="sass">
 .CodeMirror
-  font: 13px 'Menlo'
+  font: 11px 'Menlo'
   text-align: left
   border: 1px solid cyan
   height: auto

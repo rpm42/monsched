@@ -18,7 +18,7 @@
       </div>
       <div class="mv2">
         <label for="priest">Священник</label>
-        <select name="priest" v-model="newService.priest" id="priest">
+        <select name="priest" v-model="newService.priest" id="church">
           <option v-for="(priest, index) of priests" :key="index" :value="priest">{{priest}}</option>
         </select>
       </div>
@@ -27,40 +27,50 @@
         <input type="checkbox" v-model="divider">
       </div>
       <hr>
-      <button @click="submit">Добавить</button>
+      <button @click="submit">Сохранить</button>
     </div>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
+import { mapState } from 'vuex'
 import { PRIEST_LIST, CHURCH_LIST } from '@/constants/convent-info'
 
 export default {
-  name: 'CreateService',
-  props: ['date', 'day'],
+  name: 'EditService',
+  props: ['date', 'day', 'sindex'],
   data () {
     return {
       newService: {
-        time: '7:00',
-        church: 'Е',
-        service: 'Божественная Литургия',
-        priest: 'прот. Андрей'
+        time: '',
+        church: '',
+        service: '',
+        priest: ''
       },
       divider: false,
       churches: CHURCH_LIST,
       priests: PRIEST_LIST
     }
   },
+  computed: mapState(['days']),
+  mounted () {
+    const srv = this.days[this.date][this.day].services[this.sindex]
+    if (srv.divider) {
+      this.divider = true
+    }
+    this.newService = {
+      ..._.omit(srv, ['divider'])
+    }
+  },
   methods: {
     submit () {
+      let dayObj = { ...this.days[this.date][this.day] }
       if (this.divider) {
         this.newService.divider = true
       }
-      this.$store.commit('ADD_SERVICE', {
-        week: this.date,
-        day: this.day,
-        service: this.newService
-      })
+      dayObj.services[this.sindex] = this.newService
+      this.$store.commit('SET_DAY', dayObj)
       this.$router.push(`/${this.date}`)
     }
   }

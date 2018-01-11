@@ -2,8 +2,8 @@
   <div id="app" class="sans-serif">
     <div class="mw9 center ph3-ns bg-moon-gray">
       <div class="cf ph2-ns">
-          <div class="fl w-third pa2 bg-moon-gray"><week-list/></div>
-          <div class="fl w-two-thirds pa2 bg-light-gray"><router-view/></div>
+          <div class="fl w-third pa2 bg-moon-gray vh-100"><week-list/></div>
+          <div class="fl w-two-thirds pa2 bg-light-gray vh-100"><router-view/></div>
       </div>
     </div>
   </div>
