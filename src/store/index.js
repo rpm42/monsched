@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-
+import _ from 'lodash'
 Vue.use(Vuex)
 
 const state = {
@@ -49,11 +49,29 @@ const mutations = {
     services = [ ...services, service ]
     Vue.set(state.days[week][day], 'services', services)
   },
+  EDIT_SERVICE (state, { week, day, index, service }) {
+    let services = [ ...state.days[week][day].services ]
+    if (service.divider) {
+      services = services.map(srv => { return _.omit(srv, ['divider']) })
+    }
+    services[index] = service
+    Vue.set(state.days[week][day], 'services', services)
+    // Vue.set(state.days[week][day].services, sindex, service)
+  },
   SET_DAY (state, dayObj) {
     console.log('SET_DAY', dayObj)
     let weekObj = {...state.days[dayObj.week]}
     weekObj[dayObj.index] = dayObj
     Vue.set(state.days, dayObj.week, weekObj)
+  },
+  SET_OFFSET (state, { dayObj, offset }) {
+    let previousOffset = 0
+    if (dayObj.index > 1) {
+      previousOffset = state.days[dayObj.week][dayObj.index - 1].__dividerOffset
+    }
+    const __height = offset - previousOffset
+    Vue.set(state.days[dayObj.week][dayObj.index], '__dividerOffset', offset)
+    Vue.set(state.days[dayObj.week][dayObj.index], '__height', __height)
   }
 }
 

@@ -5,10 +5,16 @@ import Vuex from 'vuex'
 import App from './App'
 import router from './router'
 import store from './store'
-import 'tachyons'
+import Vuetify from 'vuetify'
+
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+import 'mdi/css/materialdesignicons.css'
+import 'vuetify/dist/vuetify.css'
+// import 'tachyons'
 
 Vue.config.productionTip = false
 
+Vue.use(Vuetify)
 Vue.use(Vuex)
 
 /* eslint-disable no-new */

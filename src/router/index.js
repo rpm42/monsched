@@ -1,40 +1,75 @@
-/*
 import Vue from 'vue'
 import Router from 'vue-router'
+
+import Index from '@/components/pages/Index'
+import DaysView from '@/components/pages/DaysView'
+import Preview from '@/components/pages/Preview'
+import CreateService from '@/components/pages/CreateService'
+import YamlView from '@/components/pages/YamlView'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'Index',
-      component: require('@/components/pages/Index.vue')
-    },
-    {
       path: '/:date/preview',
       name: 'Preview',
-      component: require('@/components/pages/Preview.vue'),
+      component: Preview,
       props: true
     },
     {
-      path: '/create-week',
-      name: 'CreateWeek',
-      component: equire('@/components/pages/CreateWeek.vue')
-    },
-    {
-      path: '/:date/:day/create-service',
-      name: 'CreateService',
-      component: require('@/components/pages/CreateService.vue'),
-      props: true
-    },
-    {
-      path: '/:date',
-      name: 'WeekView',
-      component: require('@/components/pages/WeekView.vue')
+      path: '/',
+      name: 'Index',
+      component: Index,
+      children: [
+        {
+          path: '/:date',
+          name: 'DaysView',
+          component: DaysView,
+          props: true
+        },
+        {
+          path: '/:date/yaml',
+          name: 'YamlView',
+          component: YamlView,
+          props: true
+        },
+        {
+          path: '/:date/:day/create-service',
+          name: 'CreateService',
+          component: CreateService,
+          props: true
+        }
+      ]
     }
+  ]
 })
-*/
+
+/*
+
+// {
+    //   path: '/:date/preview',
+    //   name: 'Preview',
+    //   component: require('@/components/pages/Preview.vue'),
+    //   props: true
+    // },
+    // {
+    //   path: '/create-week',
+    //   name: 'CreateWeek',
+    //   component: equire('@/components/pages/CreateWeek.vue')
+    // },
+    // {
+    //   path: '/:date/:day/create-service',
+    //   name: 'CreateService',
+    //   component: require('@/components/pages/CreateService.vue'),
+    //   props: true
+    // },
+    // {
+    //   path: '/:date',
+    //   name: 'WeekView',
+    //   component: require('@/components/pages/WeekView.vue')
+    // }
+
 import Vue from 'vue'
 import Router from 'vue-router'
 import Blank from '@/components/Blank'
@@ -91,3 +126,4 @@ export default new Router({
     }
   ]
 })
+*/

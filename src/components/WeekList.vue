@@ -5,7 +5,7 @@
       <ul class="list pl0">
         <li class="mv2" v-for="week in weeks" :key="week.start">
           <router-link :to="`/${week.start}`">
-            {{week.name}} ({{week.start}} - {{week.end}})
+            <strong class="b">{{week.name}}</strong> <small class="f7">({{week.start}} - {{week.end}})</small>
           </router-link>
         </li>
       </ul>
